@@ -1,0 +1,118 @@
+<!-- FILEPATH: /c:/Users/tangu/Desktop/web projet/game_website/app/login.html -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Page de connexion</title>
+    <style>
+      /* Ajoutez ici votre CSS personnalisé pour la mise en page */
+      .container {
+        display: flex;
+        justify-content: space-between;
+      }
+      .left-section {
+        width: 50%;
+      }
+      .right-section {
+        width: 50%;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Connexion</h1>
+
+    <div class="container">
+      <div class="left-section">
+        <h2>Nouvel Utilisateur</h2>
+        <form>
+          <label for="new-username">Nom d'utilisateur:</label>
+          <input type="text" id="new-username" name="new-username" required />
+
+          <label for="new-password">Mot de passe:</label>
+          <input type="password" id="new-password" name="new-password" required />
+
+          <input type="submit" value="Créer un compte" onclick="createUser()" />
+        </form>
+      </div>
+
+      <div class="right-section">
+        <h2>Utilisateur déjà enregistré</h2>
+        <form>
+          <label for="username">Nom d'utilisateur:</label>
+          <input type="text" id="username" name="username" required />
+
+          <label for="password">Mot de passe:</label>
+          <input type="password" id="password" name="password" required />
+
+          <input type="submit" value="Se connecter" onclick="checkUser()" />
+        </form>
+      </div>
+    </div>
+
+    <script>
+      function createUser() {
+        var username = document.getElementById("new-username").value;
+        var password = document.getElementById("new-password").value;
+
+        // Replace this code with your actual logic to create a new user
+        fetch("/users/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, password }),
+        })
+          .then((response) => {
+            if (response.ok) {
+              // Check if the user was successfully created
+              if (response.status === 200) {
+                //alert("User created successfully");
+                window.location.href = "/index";
+              } else {
+                alert("Failed to create user");
+              }
+            }else {
+                alert("Failed to create user");
+              }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+
+        return false;
+      }
+
+      function checkUser() {
+        var username = document.getElementById("username").value;
+        var password = document.getElementById("password").value;
+
+        fetch("/users/checkUserExistence", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, password }),
+        })
+          .then((response) => {
+            if (response.ok) {
+              // Vérifie si l'utilisateur existe déjà dans la base de données
+              if (response.status === 200) {
+                //alert("Utilisateur déjà enregistré");
+                window.location.href = "/index";
+              } else {
+                alert("Nom d'utilisateur ou mot de passe invalide");
+              }
+            }else {
+                alert("Nom d'utilisateur ou mot de passe invalide");
+              }
+          })
+          .catch((error) => {
+            alert("Nom d'utilisateur ou mot de passe invalide");
+
+            console.error("Erreur :", error);
+          });
+
+        return false;
+      }
+    </script>
+  </body>
+</html>
